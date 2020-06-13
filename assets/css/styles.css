@@ -1,3 +1,23 @@
+.home-cta{
+    background: url(/images/background.jpg);
+    background-size: cover;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-cta > h1 {
+    color: #e6e6f8ee;
+    background: rgba(43, 99, 64, 0.418);
+    text-align: center;
+    font-size: 10vw;
+}
+
+.photoId{
+    background-image: url(/images/smallPhotoOfMe.png);
+}
+
 .card {
     padding-top: 20px;
     margin: 10px 0 20px 0;
