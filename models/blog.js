@@ -29,5 +29,9 @@ BlogScema.query.published = function () {
         status: 'PUBLISHED'
     })    
 };
+BlogScema.virtual('synopsis').get(function(){
+    const post = this.content;
+    return post.replace(/(<([^>]+)>)/ig,"").substring(0, 225);
+});
 
 module.exports = mongoose.model('Blog', BlogScema);

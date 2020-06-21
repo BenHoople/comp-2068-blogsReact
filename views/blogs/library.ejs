@@ -1,0 +1,39 @@
+<%- include ('../partials/header') %>
+
+<% for (let blog of blogs) {%>
+  <div class="col-md-4">
+    <div class="card mb-4 box-shadow">
+        <img class="card-img-top" src="http://pinegrow.com/placeholders/img7.jpg"/>
+        <div class="card-body">
+            <h1 class="card-text"><%= blog.title %></h1>
+            <p><%- blog.synopsis %></p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a href= "/blogs/<%= blog.id %>"><button type="button" class="btn btn-sm btn-outline-secondary">View</button> </a> 
+                  <a href= "/blogs/<%= blog.id %>/edit"><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></a>
+                  <form class="form-inline" action="/blogs/delete" method="post" onsubmit="return confirm('Are you sure you want to delete all your hard work?');">
+                    <input type="hidden" value="<%= blog.id %>" name="id">
+                    <button class="delete btn btn-sm btn-outline-secondary" type="submit">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+                <small class="text-muted"><%= (blog.updatedAt.toLocaleString("en-CA")) %></small>
+            </div>
+        </div>
+    </div>
+  </div> 
+<% } %>
+ 
+
+<!-- <div class="card" style="width: 18rem;">
+  <img class="card-img-top" src="<%= //if (blog.image == null){blog.image}else{null} %>" alt="They haven't uploaded a photo yet">
+  <div class="card-body">
+    <h5 class="card-title"><%= //blog.name %></h5>
+    <p class="card-text"><%= //blog.content %></p>
+    <a href="#" class="btn btn-primary">Read</a>
+    <a href="#" class="btn btn-primary">Edit</a>
+  </div>
+</div> -->
+
+<%- include ('../partials/footer') %>

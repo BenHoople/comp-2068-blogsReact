@@ -29,9 +29,34 @@ const bodyParser = require('body-parser');// npm install body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//create a session to track user, npm install express-session 
+const session = require('express-session');
+app.use(session({
+    secret: `Zuko's my favorite character in Avatar`,
+    resave: true,
+    saveUninitialized: false
+}));
+
+//use flash notifications, npm install connect-flash
+const flash = require('connect-flash');
+app.use(flash());
+
+app.use('/', (req, res, next) => {
+    //setting up default locals
+    res.locals.pageTitle = "Flash Title!";
+
+    //pass messages to next request
+    res.locals.flash = req.flash();
+    res.locals.formData = req.session.formData || {};
+    req.session.formData = {};
+    next();
+});
+
+
 //register routing
 const routes = require('./routes.js');
 app.use('/', routes);
 
 //start server
-app.listen(process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on ${port}`));
