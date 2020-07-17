@@ -4,15 +4,6 @@ require('dotenv').config(); //npm install dotenv
 
 const path = require('path');
 
-//set our view directory
-app.set('views', path.join(__dirname,'views'));
-app.set('view engine','ejs');
-
-//style sheets
-app.use('/css', express.static('assets/css'));
-app.use('/javascript', express.static('assets/javascript'));
-app.use('/images', express.static('assets/images'));
-
 //mongo access -- npm install mongoose
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URI, {
@@ -21,13 +12,18 @@ mongoose.connect(process.env.DB_URI, {
         password: process.env.DB_PASS
     },
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 }).catch(err => console.error(`Error: ${err}`));
 
-//done after out connection but before routes
+
+// implement body parser done after out connection but before routes
 const bodyParser = require('body-parser');// npm install body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//require passport before sessions: npm install passport passport-local passport-local-mongoose
+const passport = require('passport');
 
 //create a session to track user, npm install express-session 
 const session = require('express-session');
@@ -37,7 +33,32 @@ app.use(session({
     saveUninitialized: false
 }));
 
+// Setting up Passport
+app.use(passport.initialize());
+app.use(passport.session());
+const User = require('./models/user');
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
+//set our view directory
+app.set('views', path.join(__dirname,'views'));
+app.set('view engine','ejs');
+
+//style sheets
+app.use('/css', express.static('assets/css'));
+app.use('/javascript', express.static('assets/javascript'));
+app.use('/images', express.static('assets/images'));
+
+
+
+
+
+
 //use flash notifications, npm install connect-flash
+//and add defaults
 const flash = require('connect-flash');
 app.use(flash());
 
@@ -49,6 +70,9 @@ app.use('/', (req, res, next) => {
     res.locals.flash = req.flash();
     res.locals.formData = req.session.formData || {};
     req.session.formData = {};
+
+    res.locals.authorized  = req.isAuthenticated();
+    if (res.locals.authorized ) res.locals.email = req.session.passport.user;
     next();
 });
 

@@ -5,20 +5,22 @@
     <div class="card mb-4 box-shadow">
         <img class="card-img-top" src="http://pinegrow.com/placeholders/img7.jpg"/>
         <div class="card-body">
-            <h1 class="card-text"><%= blog.title %></h1>
+            <h1 class="card-text"><%= blog.title %></h1><h2> <%= blog.user.fullname %></h2>
             <p><%- blog.synopsis %></p>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <a href= "/blogs/<%= blog.id %>"><button type="button" class="btn btn-sm btn-outline-secondary">View</button> </a> 
-                  <a href= "/blogs/<%= blog.id %>/edit"><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></a>
-                  <form class="form-inline" action="/blogs/delete" method="post" onsubmit="return confirm('Are you sure you want to delete all your hard work?');">
-                    <input type="hidden" value="<%= blog.id %>" name="id">
-                    <button class="delete btn btn-sm btn-outline-secondary" type="submit">
-                      Delete
-                    </button>
-                  </form>
+                  <% if (authorized && (typeof blog.user === undefined || blog.user.email === email)) { %>
+                    <a href= "/blogs/<%= blog.id %>/edit"><button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></a>
+                    <form class="form-inline" action="/blogs/delete" method="post" onsubmit="return confirm('Are you sure you want to delete all your hard work?');">
+                      <input type="hidden" value="<%= blog.id %>" name="id">
+                      <button class="delete btn btn-sm btn-outline-secondary" type="submit">
+                        Delete
+                      </button>
+                    </form>
+                  <% } %>
                 </div>
-                <small class="text-muted"><%= (blog.updatedAt.toLocaleString("en-CA")) %></small>
+                <small class="text-center"><%= (blog.updatedAt.toLocaleString("en-CA")) %></small>
             </div>
         </div>
     </div>
