@@ -78,11 +78,9 @@ app.get('/test', (req,res) => {
     res.status(200).json({message: 'Hello World'})
 });
 
-const clientRoot = path.join(__dirname, '/client/build');
-app.use((req,res,next) =>{
-    if (req.method === 'GET' && req.accepts('html') && !req.is('json') && !req.path.includes('.')){
-        res.sendFile('index.html', { clientRoot });
-    } else next();
+app.use(express.static(path.join(__dirname, 'client/biuld')));
+app.get('*',(req,res)=> {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
 })
 
 //start server
