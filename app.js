@@ -70,18 +70,18 @@ app.use('/', (req, res, next) => {
 });
 
 
-//register routing
+// Our routes
 const routes = require('./routes.js');
 app.use('/api', routes);
 
-app.get('/test', (req,res) => {
-    res.status(200).json({message: 'Hello World'})
+app.get('/test', (req, res) => {
+  res.status(200).json({message: 'Hello World'});
 });
 
-app.use(express.static(path.join(__dirname, 'client/biuld')));
-app.get('*',(req,res)=> {
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
-})
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 //start server
 const port = process.env.PORT || 4000;
