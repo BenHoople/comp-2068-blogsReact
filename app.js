@@ -41,8 +41,6 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
-
 //set our view directory
 app.set('views', path.join(__dirname,'views'));
 app.set('view engine','ejs');
@@ -51,11 +49,6 @@ app.set('view engine','ejs');
 app.use('/css', express.static('assets/css'));
 app.use('/javascript', express.static('assets/javascript'));
 app.use('/images', express.static('assets/images'));
-
-
-
-
-
 
 //use flash notifications, npm install connect-flash
 //and add defaults
@@ -79,8 +72,19 @@ app.use('/', (req, res, next) => {
 
 //register routing
 const routes = require('./routes.js');
-app.use('/', routes);
+app.use('/api', routes);
+
+app.get('/test', (req,res) => {
+    res.status(200).json({message: 'Hello World'})
+});
+
+const clientRoot = path.join(__dirname, '/client/build');
+app.use((req,res,next) =>{
+    if (req.method === 'GET' && req.accepts('html') && !req.is('json') && !req.path.includes('.')){
+        res.sendFile('index.html', { clientRoot });
+    } else next();
+})
 
 //start server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Listening on ${port}`));

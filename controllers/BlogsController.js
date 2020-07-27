@@ -4,32 +4,29 @@ const User = require('../models/user');
 const user = require('../models/user');
 
 exports.index = async (req, res) => {
-    try{
-        const blogs = await Blog.find().populate('user').sort({updatedAt: 'desc'});
-        res.render(`${viewPath}/library`, {
-            pageTitle: 'Library',
-            blogs: blogs
-        });
-    }catch(err){
-        req.flash('danger', 'We were unable to display the archive for some reason.');
-        console.error(err);
-        res.redirect('/');
-    }
-}
-exports.show = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id)
-        .populate('user');
-        res.render(`${viewPath}/show`, {
-        pageTitle: blog.title,
-        blog: blog
-    });
-    }catch(err){
-        req.flash('danger', 'We were unable to display the blog for some reason.');
-        console.error(err);
-        res.redirect('/');
+      const blogs = await Blog
+        .find()
+        .populate('user')
+        .sort({updatedAt: 'desc'});
+  
+      res.status(200).json(blogs);
+    } catch (error) {
+      res.status(400).json({message: 'There was an error fetching the blogs', error});
     }
-}
+  }
+
+  exports.show = async (req, res) => {
+    try {
+      const blog = await Blog.findById(req.params.id)
+        .populate('user');
+      
+      res.status(200).json(blog);
+    } catch (error) {
+      res.status(400).json({message: "There was an error fetching the blog"});
+    }
+  };
+  
 exports.new = (req,res) => {
     res.render(`${viewPath}/new`, {
         pageTitle: 'New Blog'
@@ -40,12 +37,9 @@ exports.create = async (req, res) => {
     const { user: email } = await req.session.passport;
     const user = await User.findOne({email: email});
     const blog = await Blog.create({user: user._id, ...req.body});
-    req.flash('success', 'You have a created a blog!')
-    res.redirect(`/blogs/${blog.id}`);
+    res.status(200).json(blog);
   } catch (err) {
-    req.flash('danger', `we ran into an issue, heres what it was: ${err}`)
-    req.session.formData = req.body;
-    res.redirect('blogs/new');
+    res.status(400).json({message: "there was an error creating the blog"});
   }
 }
 exports.edit = async (req, res) => {
@@ -82,11 +76,9 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try{
         await Blog.deleteOne({_id: req.body.id});
-        req.flash('success', `${req.body.title} was deleted`);
-        res.redirect(`/blogs`);
+        res.status(200).json({message: "Deleted"})
     }catch(error){
         req.flash('danger', 'We were unable to delete this blog for some reason, sorry!.');
-        console.error(error);
-        res.redirect(`/blogs/${req.body.id}/edit`);
+        res.status(400).json({message: "We couldn't delete the blog for some reason"})        
     }
 }

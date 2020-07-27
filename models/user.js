@@ -34,6 +34,9 @@ const UserSchema = new mongoose.Schema({
     }
 },{
     timestamps: true,
+    toJSON:{
+      getters: true,
+    }
 });
 //validation
 UserSchema.virtual('emailConfirmation')

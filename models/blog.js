@@ -20,7 +20,10 @@ const BlogScema = new mongoose.Schema({
         default: 'DRAFT'
     }
 },{
-    timestamps: true
+    timestamps: true,
+    toJSON:{
+      getters: true,
+    }
 });
 
 //query helpers

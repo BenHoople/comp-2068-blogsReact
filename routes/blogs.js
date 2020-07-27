@@ -2,8 +2,7 @@ const {new: _new, index, show, create, edit, update, delete: _delete} = require(
 
 function authorized (req, res, next) {
     if(!req.isAuthenticated()){
-        req.flash('danger', 'You need to log in to do that!');
-        return res.redirect('/login');
+        return res.status(401).json({message: "you have to login! before doing that!"})
     }
     next();
 }
